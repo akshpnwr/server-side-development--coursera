@@ -1,9 +1,8 @@
-const { MongoClient } = require("mongodb");
-
+const { MongoClient, Collection } = require("mongodb");
+const dboper = require("./operations");
 async function main() {
   const uri = "mongodb://localhost:27017/";
   const dbName = "conFusion";
-
   const client = new MongoClient(uri);
 
   try {
@@ -12,17 +11,14 @@ async function main() {
     console.log("connection succesfull");
     const db = client.db(dbName);
 
-    const collection = db.collection("dishes");
+    const toBeInserted = {
+      name: "roll",
+      description: "veg double paneer",
+    };
 
-    const findResult = await collection.find({}).toArray();
-    console.log("Found documents =>", findResult);
+    const res = await dboper.findDocuments(db, "dishes");
 
-    const res = await collection.insertOne({
-      name: "momos",
-      description: "non-veg",
-    });
-
-    console.log("Inserted with _id : ", res.insertedId);
+    console.log("Found Results => ", res);
   } catch (e) {
     console.error(e);
   } finally {
